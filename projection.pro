@@ -1,6 +1,6 @@
 pro projection
 
-im = readfits("",header)
+im = readfits("/user/workdir/albouyg/Gouldbelt/Taurus/HGBS_taurus_L1495_column_density_map.fits",header)
 
 ratio = 0.00388889/0.00083333333333333
 
@@ -27,6 +27,6 @@ sxaddpar,hdproj,'CROTA2',40
 improj = mproj(im,header,hdproj)
 
 ;Write files
-writefits,"",improj,hdproj
+writefits,"/user/workdir/albouyg/Gouldbelt/Taurus/HGBS_taurus_L1495_column_density_map_rebin_rot.fits",improj,hdproj
 
 END
