@@ -1,0 +1,18 @@
+--------- Installation instruction ------------
+To use the MAMDLIB you must 
+
+1) Declare the environment variable MAMDLIB_DIR that 
+points to the directory where the MAMDLIB is.
+For example, in your .cshrc you would put the following line:
+
+setenv   MAMDLIB_DIR $HOME/idl/mamdlib
+
+
+2) Add the following lines in your idl_start (idl_startup) file.
+It is important that you put these lines before the lines that
+call the ASTRON library.
+
+DEFSYSV, '!MAMDLIB_DIR', GETENV("MAMDLIB_DIR")
+!path=!path+':'+ EXPAND_PATH('+'+!MAMDLIB_DIR)
+mamdlib_init, 13     ; the number here is the color table number you want to use
+

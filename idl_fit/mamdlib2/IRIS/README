@@ -1,0 +1,40 @@
+programs needed
+$MAMDLIB_DIR/UTIL/nan2undef.pro
+$MAMDLIB_DIR/UTIL/gauss2d.pro
+$MAMDLIB_DIR/UTIL/la_convol.pro
+$MAMDLIB_DIR/PROJECTION/get_cootype.pro
+$MAMDLIB_DIR/PROJECTION/mbilinear.pro
+$MAMDLIB_DIR/PROJECTION/mprecess.pro
+$MAMDLIB_DIR/PROJECTION/mproj.pro
+
+
+
+INSTALLATION
+-------------
+To use the IRIS IDL programs you need to
+define the following environment variables in IDL:
+
+!IRISPRO - should point at the directory where the programs are installed
+!IRISDATA - should point at the directory where the IRIS data are
+
+In addition, !IRISPRO should be in your IDL !PATH.
+
+You also need to have the ASTRON library installed.
+
+
+CREATE A MOSAIQUE IMAGE
+-----------------------
+map = mosiris(header, band=band)
+
+    header is the header describing the map where you want IRIS
+    band is 1, 2, 3 or 4 for 12, 25, 60 and 100 micron
+
+A header can be created from scratch using the mkhdr_iris.pro routine.
+Example to make a header of a 200 pixels by 200 pixels map: 
+    header = mkhdr_iris( fltarr(200, 200), CRVAL1=100., CRPIX1=1., CDELT1=-0.05, CTYPE1='RA---TAN', $
+                         CRVAL2=40., CRPIX2=1., CDELT2=0.05, CTYPE2='DEC--TAN')
+   
+
+------
+M.A. Miville-Deschenes (IAS), April, 24 2006
+

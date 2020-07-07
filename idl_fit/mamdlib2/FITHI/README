@@ -1,0 +1,50 @@
+; This is a short note on how to use the fithi_cube routine that performs a 
+; Gaussian decomposition of a spectro-imagery data cube
+;
+; the MPFIT library must be available
+;
+; M.-A. Miville-Deschenes, April 2007
+
+; read your data cube
+c = readfits('mydata.fits', h)
+
+; Define the components.
+; One row per component. You can define as many components as you want.
+; For each row, the first set of three values is [minAmplitude, guessAmplitude, maxAmplitude]
+; the second set of three values is [minCentroid, guessCentroid, maxCentroid]
+; and the third set is [minSigma, guessSigma, maxSigma].
+; The centroid and sigma values are given in channels.
+; The last line (only three elements) is for the baseline level of the fit. It can be omitted.
+
+comp = [ [0.01, 1, 8.], [70, 79, 83], [12, 14, 19], $   ; WNM
+         [0.01, 2, 8], [83, 88, 93], [0.1, 3, 5], $     ; CNM1
+         [0.01, 2, 8], [73, 78, 83], [0.1, 3, 5], $     ; CNM2
+         [0.01, 2, 8], [53, 63, 73], [0.1, 3, 8], $   	; IVC1
+         [0.01, 1, 8], [40, 45, 50], [0.1, 3, 9], $     ; IVC2
+	 [-0.5, 0., 0.5]]   	     	      	  	; background
+
+; First iteration of the fit. Here each spectrum is fitted indenpendantly.
+fithi_cube, c, comp, result, chi2, /strict
+
+; Second iteration. For a given spectrum at position (i,j), the routine
+; will look at the spectra in a (i-dwindow:i+dwindow, j-dwindow:j+dwindow) area
+; and will take the spectrum with the best chi-square from the revious run (it's the keyword /chi).
+; The keywords damplitude, dcentroid and dsigma gives the tolerance around the guess
+; values (a value of 1.3 means that it can find an amplitude plus-or-minus 30% around the guess value).
+;
+; The keyword /strict make sure the values found stay within the original borders
+; defined in the variable "comp"
+
+fithi_cube, c, comp, result, chi2, dcentroid = 5, damplitude = 1.3, $
+            dsigma = 1.3, dwindow=2, /strict, /chi
+
+; Instead of using the spectrum with the best chi-square, fithi_cube can also
+; take the median values inside the area (i-dwindow:i+dwindow, j-dwindow:j+dwindow).
+; I found this to converge more rapidely on a good solution.
+
+fithi_cube, c, comp, result, chi2, dcentroid = 5, damplitude = 1.3, $
+            dsigma = 1.3, dwindow=2, /strict, /median
+
+; A large number of iterations (>10) can be necessary to fit complex regions.
+; In that case it is useful to lower gradually the values of damplitude, dcentroid and dsigma
+; from one iteration to the next
